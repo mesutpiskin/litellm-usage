@@ -22,9 +22,14 @@ const server = http.createServer((req, res) => {
       return key === 'sk-test'
         ? json(200, { info: { key_alias: 'ci', spend: 3, max_budget: 10, user_id: 'dev@example.com', token: 'h' } })
         : json(404, { detail: 'key not found' });
-    case '/user/info': return json(200, { user_id: 'dev@example.com', user_info: { spend: 7.5, max_budget: 100 }, keys: [] });
+    case '/v2/user/info': return json(200, {
+      user_id: 'dev@example.com', user_email: 'dev@example.com', spend: 7.5, max_budget: 100,
+    });
     case '/v1/models': return json(200, { data: [{ id: 'gemini-pro' }] });
     case '/user/daily/activity':
+      if (key === 'sk-test') {
+        return json(403, { detail: "Virtual key is not allowed to call this route. Only allowed to call routes: ['llm_api_routes', '/key/info', '/v2/user/info']. Tried to call route: /user/daily/activity" });
+      }
       return json(200, {
         results: [{ date: today, metrics: { spend: 0.42, total_tokens: 1234, api_requests: 3 }, breakdown: { models: {} } }],
         metadata: { has_more: false },
@@ -131,5 +136,9 @@ test('adds an API key account and switches to it', async () => {
   assert.equal(accounts.length, 2);
   assert.equal(globalState.get('activeAccount'), accounts[1].id);
   assert.ok(calls.includes('GET /key/info'));
+  assert.ok(calls.includes('GET /v2/user/info'));
+  assert.equal(statusItem.command, 'litellm.showDashboard', 'a forbidden activity route must not break virtual-key usage');
+  assert.equal(statusItem.text, '$(pulse) $0');
+  assert.match(statusItem.tooltip.value, /\$7\.50/);
   assert.match(statusItem.tooltip.value, /ci @ .*\n\n.*dev@example\.com/s, 'tooltip lists both accounts');
 });

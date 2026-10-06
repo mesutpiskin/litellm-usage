@@ -45,6 +45,15 @@ export interface UserInfoResponse {
   keys?: UserKey[];
 }
 
+interface UserInfoV2Response {
+  user_id?: string;
+  user_email?: string | null;
+  user_role?: string | null;
+  spend?: number;
+  max_budget?: number | null;
+  budget_reset_at?: string | null;
+}
+
 export interface DailyEntry {
   date: string;
   metrics: Partial<Metrics>;
@@ -133,8 +142,24 @@ export class LiteLLMClient {
     return this.get('key/info');
   }
 
-  userInfo(userId: string): Promise<UserInfoResponse> {
-    return this.get('user/info', { user_id: userId });
+  async userInfo(userId: string): Promise<UserInfoResponse> {
+    try {
+      const v2 = await this.get<UserInfoV2Response>('v2/user/info', { user_id: userId });
+      return {
+        user_id: v2.user_id,
+        user_info: {
+          user_email: v2.user_email,
+          user_role: v2.user_role,
+          spend: v2.spend,
+          max_budget: v2.max_budget,
+          budget_reset_at: v2.budget_reset_at,
+        },
+      };
+    } catch (e) {
+      // Keep compatibility with proxies released before /v2/user/info.
+      if (!(e instanceof ApiError) || e.status !== 404) { throw e; }
+      return this.get('user/info', { user_id: userId });
+    }
   }
 
   async models(): Promise<string[]> {

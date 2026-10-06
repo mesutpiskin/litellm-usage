@@ -31,6 +31,8 @@ before(async () => {
     switch (url.pathname) {
       case '/key/info':
         return json(200, { key: 'sk-test', info: { token: 'hash1', key_alias: 'my-key', spend: 12.5, max_budget: 50, user_id: 'u1' } });
+      case '/v2/user/info':
+        return json(200, { user_id: 'u1', user_email: 'dev@example.com', spend: 7.5, max_budget: 100 });
       case '/v1/models':
         return json(200, { data: [{ id: 'gpt-4o' }, { id: 'claude_sonnet' }] });
       case '/user/daily/activity': {
@@ -65,6 +67,11 @@ test('reads key info and models with an API key', async () => {
   assert.equal(info.key_alias, 'my-key');
   assert.equal(info.max_budget, 50);
   assert.deepEqual(await client.models(), ['claude_sonnet', 'gpt-4o']);
+  assert.deepEqual(await client.userInfo('u1'), {
+    user_id: 'u1',
+    user_info: { user_email: 'dev@example.com', user_role: undefined, spend: 7.5, max_budget: 100,
+      budget_reset_at: undefined },
+  });
 });
 
 test('follows daily activity pagination and keeps model names verbatim', async () => {

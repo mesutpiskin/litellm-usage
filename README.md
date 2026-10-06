@@ -102,7 +102,7 @@ SSO sessions are short-lived by design, 24 hours by default. When one expires, t
 Your proxy probably runs several workers or replicas without a shared Redis cache, which the SSO flow needs. Ask your LiteLLM admin to set up Redis (see the [LiteLLM CLI SSO docs](https://docs.litellm.ai/docs/proxy/cli_sso)). Until then, sign in with a virtual key.
 
 **I don't see the daily chart or the model breakdown.**
-These need a LiteLLM version with the `/user/daily/activity` endpoint. On older proxies only total spend is shown.
+These need access to the `/user/daily/activity` endpoint. On older proxies, or when a virtual key is not permitted to call it, only total spend is shown.
 
 **"This key" shows the same numbers as "All my keys".**
 SSO accounts sign in as a user rather than as a single key, so their usage is always per user.
@@ -111,7 +111,7 @@ SSO accounts sign in as a user rather than as a single key, so their usage is al
 Turn on `litellm.allowInsecureTLS` if your proxy uses an internal or self-signed certificate.
 
 **What does the extension send, and where?**
-It only talks to the proxy URL you enter, using these endpoints: `/key/info`, `/user/info`, `/user/daily/activity`, `/v1/models`, and the login endpoints (`/login`, `/sso/cli/*`). There's no telemetry.
+It only talks to the proxy URL you enter, using these endpoints: `/key/info`, `/v2/user/info` (with `/user/info` fallback for older proxies), `/user/daily/activity`, `/v1/models`, and the login endpoints (`/login`, `/sso/cli/*`). There's no telemetry.
 
 ## Contributing
 

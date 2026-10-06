@@ -243,7 +243,7 @@ function render() {
     + (t.failed_requests ? '<div class="error" style="margin:0">' + num(t.failed_requests) + ' failed</div>' : '') + '</div></div>';
 
   if (s.activityUnsupported) {
-    h += '<p class="muted">This LiteLLM version does not support /user/daily/activity, so daily and per-model breakdowns are unavailable.</p>';
+    h += '<p class="muted">This account cannot access /user/daily/activity, so daily and per-model breakdowns are unavailable.</p>';
   } else {
     h += chart(s.days);
     h += '<h2>Models</h2>';

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.2
+
+- Use LiteLLM's new `/v2/user/info` endpoint while retaining compatibility with older proxies.
+- Keep total spend and budget available when a virtual key cannot access daily activity analytics.
+
 ## 0.6.1
 
 - New README with a screenshot, getting-started guide and FAQ.

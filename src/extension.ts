@@ -375,7 +375,11 @@ class UsageController implements vscode.Disposable {
       const [start, end] = dateBounds(this.state.range);
       const activityP = client.dailyActivity(start, end, this.state.scope === 'key' ? info.token : undefined)
         .then(entries => ({ entries, unsupported: false }), (e: unknown) => {
-          if (e instanceof ApiError && e.status === 404) { return { entries: [] as DailyEntry[], unsupported: true }; }
+          // Virtual keys commonly have access to /key/info and /v2/user/info but not the
+          // analytics route. Preserve their total spend/budget instead of failing refresh.
+          if (e instanceof ApiError && (e.status === 404 || (!sso && e.unauthorized))) {
+            return { entries: [] as DailyEntry[], unsupported: true };
+          }
           throw e;
         });
       // Awaited together so a failure in one request never leaves another rejection unhandled.
