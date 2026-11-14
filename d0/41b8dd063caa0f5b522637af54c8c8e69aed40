@@ -1,0 +1,42 @@
+src/dashboard.ts
+  s_66a4dca315de6e::t_c8e13660a4bab9 300-301,307,311-317
+  s_66a4dca315de6e::t_155c182ab83409 133-139,147,156-167,174,215-244,319-320
+src/client.ts
+  s_66a4dca315de6e::t_531132389f4539 175
+  s_66a4dca315de6e::t_bdc583bee66ce3 177
+  s_66a4dca315de6e::t_f77261ce1fddd9 176
+  s_66a4dca315de6e::t_9620c8843dc2e9 126-174,178-182
+package.json
+  s_66a4dca315de6e::t_bd3efa24fc64d4 5
+  s_66a4dca315de6e::t_19d23cc78b8e98 91-96
+CHANGELOG.md
+  s_66a4dca315de6e::t_69b3769f09614b 3-13
+src/extension.ts
+  s_66a4dca315de6e::t_19d23cc78b8e98 62,131-145
+  s_66a4dca315de6e::t_54fb3b1304a13b 3,37-38,146-147,483-495,544
+test/distribution.test.js
+  s_66a4dca315de6e::t_117719ccfdbac4 24
+  s_66a4dca315de6e::t_4607cec3c423e6 23,62-63
+  s_66a4dca315de6e::t_d09c926d78910e 1-22,25-61,64-70
+README.md
+  s_66a4dca315de6e::t_b7fdf664ee7b76 60
+test/dashboard.test.js
+  s_66a4dca315de6e::t_d67b862fc807d2 1-63,65-100
+  s_66a4dca315de6e::t_cc449484c1008a 64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d041b8dd063caa0f5b522637af54c8c8e69aed40",
+  "prompts": {},
+  "sessions": {
+    "s_66a4dca315de6e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1db78-ab73-7bf2-8410-5a8c6a2a83f2",
+        "model": "kimi-k3"
+      },
+      "human_author": "Mesut Pişkin <mesutpiskin@outlook.com>"
+    }
+  }
+}
