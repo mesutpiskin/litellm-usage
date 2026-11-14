@@ -1,0 +1,29 @@
+src/dashboard.ts
+  s_66a4dca315de6e::t_e806ef5b88e6d0 260-261
+test/extension.test.js
+  s_66a4dca315de6e::t_8d8c07d0079379 14,196,198
+  s_66a4dca315de6e::t_674d865c00921f 13
+  s_66a4dca315de6e::t_46f23574c0c566 146-195,197,199-203
+CHANGELOG.md
+  s_66a4dca315de6e::t_6132f8e3ca1348 3-10
+src/extension.ts
+  s_66a4dca315de6e::t_127a1fbdb3bbd8 396-401,420,461,530
+package.json
+  s_66a4dca315de6e::t_6132f8e3ca1348 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ada1b0b0e5dffd819655f4011a29704e20143d5c",
+  "prompts": {},
+  "sessions": {
+    "s_66a4dca315de6e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1db78-ab73-7bf2-8410-5a8c6a2a83f2",
+        "model": "kimi-k3"
+      },
+      "human_author": "Mesut Pişkin <mesutpiskin@outlook.com>"
+    }
+  }
+}
