@@ -1,5 +1,6 @@
 import * as crypto from 'crypto';
 import * as vscode from 'vscode';
+import { dayMonthPattern, formatPattern } from './dateFormat';
 import type { Range, Scope, UsageState } from './extension';
 
 export interface DashboardHost {
@@ -152,7 +153,14 @@ const money = v => !v ? '$0' : v < 0.01 ? '$' + v.toFixed(4) : v < 100 ? '$' + v
 const tokens = v => v >= 1e9 ? (v/1e9).toFixed(1)+'B' : v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? (v/1e3).toFixed(1)+'K' : String(v);
 const num = v => (v ?? 0).toLocaleString();
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmtDate = iso => { if (!iso) return ''; const d = new Date(iso); return isNaN(d) ? esc(iso) : d.toLocaleString(); };
+${formatPattern.toString()}
+${dayMonthPattern.toString()}
+const dateFmt = () => state?.dateFormat ?? { date: 'yyyy-MM-dd', time: 'HH:mm' };
+const fmtDate = iso => { if (!iso) return ''; const d = new Date(iso); return isNaN(d) ? esc(iso) : esc(formatPattern(d, dateFmt().date + ' ' + dateFmt().time)); };
+// Activity days are plain YYYY-MM-DD strings: build a local date so the day never shifts by time zone.
+const dayDate = ymd => { const [y, m, d] = ymd.split('-').map(Number); return new Date(y, m - 1, d); };
+const fmtDay = ymd => esc(formatPattern(dayDate(ymd), dateFmt().date));
+const fmtDayShort = ymd => esc(formatPattern(dayDate(ymd), dayMonthPattern(dateFmt().date)));
 const pctFmt = v => v >= 99.95 ? '100%' : v >= 10 ? v.toFixed(1) + '%' : v >= 0.05 ? v.toFixed(1) + '%' : v > 0 ? '<0.1%' : '0%';
 const swatches = () => [
   getComputedStyle(document.body).getPropertyValue('--vscode-charts-blue') || '#3794ff',
@@ -191,9 +199,9 @@ function chart(days) {
     const x = pad + i * bw;
     const maxLabels = compact ? 6 : 30;
     const label = i % Math.ceil(days.length / maxLabels) === 0
-      ? '<text x="' + (x + bw/2) + '" y="' + (H - 4) + '" text-anchor="middle">' + d.date.slice(5) + '</text>' : '';
+      ? '<text x="' + (x + bw/2) + '" y="' + (H - 4) + '" text-anchor="middle">' + fmtDayShort(d.date) + '</text>' : '';
     return '<rect class="b" x="' + (x + 1) + '" y="' + (H - 18 - h) + '" width="' + Math.max(1, bw - 2) + '" height="' + h + '" rx="2">'
-      + '<title>' + d.date + ': ' + fmt(val(d.metrics)) + '</title></rect>' + label;
+      + '<title>' + fmtDay(d.date) + ': ' + fmt(val(d.metrics)) + '</title></rect>' + label;
   }).join('');
   const axis = '<text x="0" y="12">' + fmt(max) + '</text><text x="0" y="' + (H - 18) + '">0</text>';
   const btn = (k, l) => '<button data-action="chart" data-value="' + k + '" class="' + (chartMetric === k ? 'active' : '') + '">' + l + '</button>';
