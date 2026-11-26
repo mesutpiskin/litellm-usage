@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { Account, AccountStore, AuthMode } from './accounts';
 import { addMetrics, ApiError, DailyEntry, distValue, emptyMetrics, jwtClaims, KeyInfo, LiteLLMClient, Metrics, modelGroup, ModelPrice, UserInfoResponse } from './client';
 import { broadcast, DashboardPanel, UsageViewProvider } from './dashboard';
+import { DateFormat, intlDateFormat, systemDateFormat } from './dateFormat';
 import { discoverCompanionKeys, readLocalActivity } from './localLogs';
 
 export type Range = 1 | 7 | 30 | 90;
@@ -40,6 +41,8 @@ export interface UsageState {
   totals: Metrics;
   today: Metrics;
   activityUnsupported: boolean;
+  /** OS regional short date / time patterns used by the dashboard. */
+  dateFormat: DateFormat;
 }
 
 let controller: UsageController | undefined;
@@ -90,8 +93,10 @@ class UsageController implements vscode.Disposable {
       accounts: [],
       range: context.globalState.get<Range>('range', 7),
       scope: context.globalState.get<Scope>('scope', 'user'),
+      dateFormat: intlDateFormat(),
       ...emptyUsage(),
     };
+    void systemDateFormat().then(fmt => { this.state.dateFormat = fmt; this.render(); }, () => undefined);
 
     this.disposables.push(vscode.workspace.onDidChangeConfiguration(e => {
       if (e.affectsConfiguration('litellm')) {

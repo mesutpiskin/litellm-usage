@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Show dates in the operating system's regional format (for example `dd.MM.yyyy` with a 24-hour
+  clock) instead of VS Code's display language. This covers "Resets", "SSO session expires",
+  "Last updated" and the daily chart labels and tooltips. On Windows the short date / time
+  patterns are read from the regional settings, on macOS from the system region and the 24-hour
+  setting, and elsewhere from `LC_TIME` / `LANG`.
+
 ## 0.7.4
 
 - Recover daily and per-model usage from local Claude Code (`~/.claude-corp`, `~/.claude`) and

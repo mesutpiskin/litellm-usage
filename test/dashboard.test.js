@@ -46,7 +46,8 @@ const state = {
     { name: 'Claude Haiku 4.5', metrics: metrics(1, 1000, 1), spendPct: 10, tokensPct: 6.25, requestsPct: 5 },
   ],
   totals: metrics(10, 16000, 20), today: metrics(5, 9000, 10), activityUnsupported: false,
-  lastUpdated: new Date().toISOString(),
+  lastUpdated: new Date(2026, 10, 5, 14, 7).toISOString(),
+  dateFormat: { date: 'dd.MM.yyyy', time: 'HH:mm' },
 };
 
 let root, messageHandler;
@@ -97,4 +98,14 @@ test('models table carries the full Claude + Codex aliases with token shares', (
   }
   assert.match(out, /<th>Share<\/th>/);
   assert.match(out, /<th>Tok\.%<\/th>/);
+});
+
+test('dates follow the OS regional format (day first, 24-hour clock)', () => {
+  messageHandler({ data: { type: 'state', state } });
+  const out = root.innerHTML;
+  assert.match(out, /Last updated: 05\.11\.2026 14:07/);
+  const [y, m, d] = today.split('-');
+  assert.ok(out.includes('>' + d + '.' + m + '</text>'), 'chart label is day.month');
+  assert.ok(out.includes('<title>' + d + '.' + m + '.' + y + ':'), 'chart tooltip uses the full OS date');
+  assert.doesNotMatch(out, /\d (AM|PM)\b/);
 });
